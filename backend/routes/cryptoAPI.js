@@ -4,7 +4,6 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-// Middleware to validate API key
 const validateApiKey = async (req, res, next) => {
   const apiKey = req.header('api-key');
   const user = await User.findOne({ apiKeys: apiKey });
@@ -15,7 +14,6 @@ const validateApiKey = async (req, res, next) => {
   next();
 };
 
-// /api/v1/stats: Get latest stats for a cryptocurrency
 router.get('/stats', [validateApiKey], async (req, res) => {
   const { coin } = req.query;
 
@@ -30,7 +28,6 @@ router.get('/stats', [validateApiKey], async (req, res) => {
       return res.status(404).json({ msg: 'No data found for the requested coin' });
     }
 
-    // Extract the latest entry from the data array
     const latestEntry = latestData.data[latestData.data.length - 1];
 
     res.json({
@@ -44,35 +41,22 @@ router.get('/stats', [validateApiKey], async (req, res) => {
   }
 });
 
-// /api/v1/deviation: Get price deviation for the last 100 records
 router.get('/deviation', [validateApiKey], async (req, res) => {
   const { coin } = req.query;
-
   if (!coin) {
     return res.status(400).json({ msg: 'Coin query parameter is required' });
   }
-
   try {
     const cryptoData = await CryptoData.findOne({ coin }).exec();
-
     if (!cryptoData || cryptoData.data.length < 2) {
       return res.status(404).json({ msg: 'Not enough data to calculate deviation' });
     }
-
-    // Get the last 100 records or as many as available
     const dataRecords = cryptoData.data.slice(-100);
-
-    // Extract USD prices from the records
     const prices = dataRecords.map(record => record.usd);
-
     if (prices.length < 2) {
       return res.status(404).json({ msg: 'Not enough data to calculate deviation' });
     }
-
-    // Calculate the mean (average) price
     const mean = prices.reduce((sum, price) => sum + price, 0) / prices.length;
-
-    // Calculate the variance and standard deviation
     const variance = prices.reduce((sum, price) => sum + Math.pow(price - mean, 2), 0) / prices.length;
     const deviation = Math.sqrt(variance).toFixed(2);
 

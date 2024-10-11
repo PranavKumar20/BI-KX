@@ -17,7 +17,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGO_URI);
 cron.schedule('0 */2 * * *', fetchCryptoData);
-// cron.schedule('*/30 * * * * *', fetchCryptoData);
+// cron.schedule('*/50 * * * * *', fetchCryptoData);
 
 app.get('/', (req, res) => {
   res.send('hii there');
