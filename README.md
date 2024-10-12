@@ -1,3 +1,6 @@
+### Want a quick look to APIs without downloading the code. please head over to `https://dsjl6a2ggwc2.cloudfront.net/` login and generate api key and then try apis, you will even get curl command to copy , which can be then imported to postman and can be tested there.
+
+
 # Readme to go through the submission
 
 This is a simple Node.js and React.js application for interacting with cryptocurrency data via APIs. It includes a backend server that provides real-time crypto data and a frontend interface for user authentication, API key generation, and testing the APIs.
@@ -60,5 +63,5 @@ This is a simple Node.js and React.js application for interacting with cryptocur
 3. Start the React Development server:
     ```bash
     npm start
-4. The fornend will be available at `http://localhost:300`.
+4. The fornend will be available at `http://localhost:5173`.
 

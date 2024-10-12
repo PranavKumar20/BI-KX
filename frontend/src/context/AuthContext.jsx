@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_BASE_URL from '../config/ApiConfig';
@@ -12,6 +12,13 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setUser({ token });
+    }
+  }, []);
 
   const signup = async (username, emailId, password) => {
     try {
@@ -30,20 +37,20 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, { emailId, password });
       const { token } = response.data;
-      const username = email;
+      const username = emailId;  
       setUser({ username, token });
       localStorage.setItem('token', token);
-      navigate('/'); 
+      navigate('/');
     } catch (error) {
       console.error('Login error:', error);
-      throw error; 
+      throw error;
     }
   };
 
   const logout = () => {
-    setUser(null); 
-    localStorage.removeItem('token'); 
-    navigate('/login'); 
+    setUser(null);
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
